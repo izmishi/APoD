@@ -71,7 +71,7 @@ struct APOD_WidgetEntryView : View {
 			GeometryReader { geometry in
 				ZStack(alignment: .leading) {
 					
-					Image(uiImage: entry.apodItem.image!)
+					Image(uiImage: (entry.apodItem.image?.resizeSmallestDimensionDown(to: 1000))!)
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 						.frame(width: geometry.size.width, height: geometry.size.height)

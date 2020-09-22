@@ -51,6 +51,13 @@ extension UIImage {
 			self.draw(in: CGRect(origin: .zero, size: size))
 		}
 	}
+	
+	func resizeSmallestDimensionDown(to dim: CGFloat) -> UIImage? {
+		let minDimension = min(size.width, size.height)
+		// scale the smallest dimension down to dim if it's larger than 1.25 * dim
+		let scale = minDimension > dim * 1.25 ? minDimension / dim : 1
+		return resized(to: CGSize(width: size.width / scale, height: size.height / scale))
+	}
 	 
 	var averageColor: UIColor? {
 		guard let small = self.resized(to: CGSize(width: 1, height: 1)) else { return nil }
