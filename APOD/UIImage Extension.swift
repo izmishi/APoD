@@ -16,7 +16,7 @@ extension UIColor {
 }
 
 extension CGImage {
-	func colors(at: [CGPoint]) -> [UIColor]? {
+	func colors(at points: [CGPoint]) -> [UIColor]? {
 		let colorSpace = CGColorSpaceCreateDeviceRGB()
 		let bytesPerPixel = 4
 		let bytesPerRow = bytesPerPixel * width
@@ -30,7 +30,7 @@ extension CGImage {
 		
 		context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))
 		
-		return at.map { p in
+		return points.map { p in
 			let i = bytesPerRow * Int(p.y) + bytesPerPixel * Int(p.x)
 			
 			let a = CGFloat(ptr[i + 3]) / 255.0
@@ -45,8 +45,12 @@ extension CGImage {
 
 extension UIImage {
 	
-	func resized(to size: CGSize) -> UIImage? {
-		let renderer = UIGraphicsImageRenderer(size: size)
+	func resized(to newSize: CGSize, scale: CGFloat = 1) -> UIImage? {
+		let format = UIGraphicsImageRendererFormat()
+		format.scale = scale
+		
+		let renderer = UIGraphicsImageRenderer(size: size, format: format)
+		
 		return renderer.image { (context) in
 			self.draw(in: CGRect(origin: .zero, size: size))
 		}
@@ -54,14 +58,60 @@ extension UIImage {
 	
 	func resizeSmallestDimensionDown(to dim: CGFloat) -> UIImage? {
 		let minDimension = min(size.width, size.height)
-		// scale the smallest dimension down to dim if it's larger than 1.25 * dim
-		let scale = minDimension > dim * 1.25 ? minDimension / dim : 1
-		return resized(to: CGSize(width: size.width / scale, height: size.height / scale))
+		// scale the smallest dimension down to dim if it's larger than 1.1 * dim
+		
+		guard minDimension > dim * 1.1 else {
+			return self
+		}
+		
+		let scale = minDimension / dim
+		
+		NSLog("scale: \(scale), \(CGSize(width: size.width / scale, height: size.height / scale))")
+		let r = resized(to: CGSize(width: size.width / scale, height: size.height / scale))
+		
+		return r
+	}
+	
+	var averageColorFromRandomSample: UIColor? {
+		let count = 20
+		
+		var red: CGFloat = 0
+		var green: CGFloat = 0
+		var blue: CGFloat = 0
+		var alpha: CGFloat = 0
+		
+		var avgRed: CGFloat = 0
+		var avgGreen: CGFloat = 0
+		var avgBlue: CGFloat = 0
+		var avgAlpha: CGFloat = 0
+		
+		var randomPoints: [CGPoint] = []
+		
+		for _ in 0..<count {
+			randomPoints.append(CGPoint(x: Int.random(in: 0..<Int(size.width)), y: Int.random(in: 0..<Int(size.height))))
+		}
+		
+		guard let colours = self.cgImage?.colors(at: randomPoints) else { return nil }
+		
+		for colour in colours {
+			colour.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+			
+			avgRed += red
+			avgBlue += blue
+			avgGreen += green
+			avgAlpha += alpha
+		}
+		
+		let cgFloatCount = CGFloat(count)
+		
+		return UIColor(red: avgRed / cgFloatCount, green: avgGreen / cgFloatCount, blue: avgBlue / cgFloatCount, alpha: avgGreen / cgFloatCount)
 	}
 	 
 	var averageColor: UIColor? {
-		guard let small = self.resized(to: CGSize(width: 1, height: 1)) else { return nil }
+		guard let small = self.resized(to: CGSize(width: 1, height: 1), scale: 0.01) else { return nil }
 		
+		
+		NSLog("smallImage: \(small)")
 		return small.cgImage?.colors(at: [.zero])?[0]
 	}
 	

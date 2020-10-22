@@ -78,51 +78,51 @@ public class APODFetcher {
 	static let session = URLSession(configuration: .default)
 	
 	
-//	static func loadAPODFromAPI(completion: @escaping (APODItem?, Error?) -> Void) {
-//		session.dataTask(with: apodAPIURL) { (data, response, error) in
-//			guard let data = data else { return }
-//
-//			guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] else { return }
-//
-//			var imageCreditLabel = "Copyright"
-//			var imageCredit = ""
-//			var explanation = json["explanation"] ?? "No explanation"
-//
-//			if let apodData = try? Data(contentsOf: apodURL) {
-//				if let apodHTML = String(data: apodData, encoding: .utf8) {
-//					(explanation, imageCreditLabel, imageCredit) = getExplanationAndCredits(from: apodHTML)
-//				}
-//			}
-//
-//
-//			let title = json["title"] ?? ""
-//			let mediaType = APODItem.MediaType(from: json["media_type"] ?? "Not Found")
-//			let apodURL = json["hdurl"] ?? json["url"] ?? ""
-//			let copyright = imageCredit != "" ? imageCredit : (json["copyright"] ?? "Public Domain")
-//			var apodDate = Date()
-//
-//			if let dateString = json["date"] {
-//				apodDate = date(fromISO8601String: dateString)
-//			}
-//
-//			var apodImage: UIImage? = nil
-//
-//			switch mediaType {
-//			case .image:
-//				guard let url = URL(string: apodURL) else { break }
-//				apodImage = getImage(for: url)
-//			case .video:
-//				apodImage = getYouTubeThumbnail(for: apodURL)
-//			default:
-//				break
-//			}
-//
-//
-//			let apod = APODItem(title: title, date: apodDate, image: apodImage, imageCreditLabel: imageCreditLabel, imageCredit: copyright, explanation: explanation, mediaType: mediaType)
-//
-//			completion(apod, error)
-//		}.resume()
-//	}
+	static func loadAPODFromAPI(completion: @escaping (APODItem?, Error?) -> Void) {
+		session.dataTask(with: apodAPIURL) { (data, response, error) in
+			guard let data = data else { return }
+
+			guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] else { return }
+
+			var imageCreditLabel = "Copyright"
+			var imageCredit = ""
+			var explanation = json["explanation"] ?? "No explanation"
+
+			if let apodData = try? Data(contentsOf: apodURL) {
+				if let apodHTML = String(data: apodData, encoding: .utf8) {
+					(explanation, imageCreditLabel, imageCredit) = getExplanationAndCredits(from: apodHTML)
+				}
+			}
+
+
+			let title = json["title"] ?? ""
+			let mediaType = APODItem.MediaType(from: json["media_type"] ?? "Not Found")
+			let apodURL = json["hdurl"] ?? json["url"] ?? ""
+			let copyright = imageCredit != "" ? imageCredit : (json["copyright"] ?? "Public Domain")
+			var apodDate = Date()
+
+			if let dateString = json["date"] {
+				apodDate = date(fromISO8601String: dateString)
+			}
+
+			var apodImage: UIImage? = nil
+
+			switch mediaType {
+			case .image:
+				guard let url = URL(string: apodURL) else { break }
+				apodImage = getImage(for: url)
+			case .video:
+				apodImage = getYouTubeThumbnail(for: apodURL)
+			default:
+				break
+			}
+
+
+			let apod = APODItem(title: title, date: apodDate, image: apodImage, imageCreditLabel: imageCreditLabel, imageCredit: copyright, explanation: explanation, mediaType: mediaType)
+
+			completion(apod, error)
+		}.resume()
+	}
 	
 	static func getImage(for url: URL) -> UIImage? {
 		do {
@@ -229,7 +229,7 @@ public class APODFetcher {
 		var image: UIImage? = nil
 		var mediaType = APODItem.MediaType.unknown("")
 		
-		if let imageRange = imageLinkPattern?.rangeOfFirstMatch(in: html, range: range) {
+		if let imageRange = imageLinkPattern?.rangeOfFirstMatch(in: html, range: range), imageRange.length > 0 {
 			let imageLink = "https://apod.nasa.gov/apod/" + html[Range(imageRange, in: html)!].trimmingCharacters(in: .whitespaces)
 			if let imageURL = URL(string: imageLink), let imageData = try? Data(contentsOf: imageURL) {
 				image = UIImage(data: imageData)

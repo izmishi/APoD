@@ -17,21 +17,31 @@ struct Provider: TimelineProvider {
 	}
 	
 	func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
-		let entry = SimpleEntry(date: Date(), apodItem: APODItem())
-		completion(entry)
+		
+		if context.isPreview {
+			// For the widget gallery
+			let entry = SimpleEntry(date: Date(), apodItem: APODItem())
+			completion(entry)
+		} else {
+			APODFetcher.loadCurrentAPOD { (apodItem, error) in
+				let apod = apodItem ?? APODItem()
+				let entry = SimpleEntry(date: Date(), apodItem: apod)
+				
+				completion(entry)
+			}
+		}
 	}
 	
 	func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
 		let oneDay = 86400.0
 		APODFetcher.loadCurrentAPOD { (apodItem, error) in
 			let apod = apodItem ?? APODItem()
-			
 			let entry = SimpleEntry(date: Date(), apodItem: apod)
 			
 			var calendar = Calendar.current
 			calendar.timeZone = TimeZone(identifier: "America/Detroit")!
 			
-			let nextReloadDate = calendar.date(bySettingHour: 0, minute: 10, second: 0, of: Date().advanced(by: oneDay)) ?? Date().advanced(by: oneDay)
+			let nextReloadDate = calendar.date(bySettingHour: 1, minute: 10, second: 0, of: Date().advanced(by: oneDay)) ?? Date().advanced(by: oneDay)
 			
 			
 			let timeline = Timeline(entries: [entry], policy: .after(nextReloadDate))
@@ -49,7 +59,6 @@ struct SimpleEntry: TimelineEntry {
 struct PlaceholderView : View {
     var body: some View {
 		PlaceholderImage(type: .image)
-		
     }
 }
 
@@ -67,11 +76,11 @@ struct APOD_WidgetEntryView : View {
 
     var body: some View {
 		
-		if entry.apodItem.image != nil {
+		if let apodImage = entry.apodItem.image {
 			GeometryReader { geometry in
 				ZStack(alignment: .leading) {
 					
-					Image(uiImage: (entry.apodItem.image?.resizeSmallestDimensionDown(to: 1000))!)
+					Image(uiImage: apodImage)//.resizeSmallestDimensionDown(to: 1000) ?? apodImage)
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 						.frame(width: geometry.size.width, height: geometry.size.height)
