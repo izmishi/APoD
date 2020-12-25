@@ -25,6 +25,8 @@
 		8044E8E624A80A2C00924133 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8044E8E524A80A2C00924133 /* Preview Assets.xcassets */; };
 		8044E8EF24A8D7C100924133 /* APODFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8044E8EE24A8D7C000924133 /* APODFetcher.swift */; };
 		806B9EAF24B54A2800BA652B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8044E8E524A80A2C00924133 /* Preview Assets.xcassets */; };
+		809F5116254192930083CE67 /* GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809F5115254192930083CE67 /* GIF.swift */; };
+		809F5117254192930083CE67 /* GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809F5115254192930083CE67 /* GIF.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +71,7 @@
 		8044E8E724A80A2C00924133 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8044E8ED24A80B5A00924133 /* APOD.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = APOD.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		8044E8EE24A8D7C000924133 /* APODFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODFetcher.swift; sourceTree = "<group>"; };
+		809F5115254192930083CE67 /* GIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIF.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,7 @@
 				803B902B24AA735C007394E2 /* Frameworks */,
 				8044E8DC24A80A1800924133 /* Products */,
 			);
+			indentWidth = 3;
 			sourceTree = "<group>";
 		};
 		8044E8DC24A80A1800924133 /* Products */ = {
@@ -138,6 +142,7 @@
 				8044E8EE24A8D7C000924133 /* APODFetcher.swift */,
 				801C00D024ACEB0B007FEE51 /* UIImage Extension.swift */,
 				803E6CA124AD56E40033F4EE /* String Extension.swift */,
+				809F5115254192930083CE67 /* GIF.swift */,
 				8044E8ED24A80B5A00924133 /* APOD.playground */,
 				8044E8E224A80A2B00924133 /* Assets.xcassets */,
 				8044E8E724A80A2C00924133 /* Info.plist */,
@@ -255,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				809F5117254192930083CE67 /* GIF.swift in Sources */,
 				801C00D124ACEB0B007FEE51 /* UIImage Extension.swift in Sources */,
 				803B903F24AACBD6007394E2 /* Supplementary Views.swift in Sources */,
 				803E6CA324AD56E50033F4EE /* String Extension.swift in Sources */,
@@ -273,6 +279,7 @@
 				8044E8DF24A80A1800924133 /* APODApp.swift in Sources */,
 				803B902524AA43A6007394E2 /* Supplementary Views.swift in Sources */,
 				803E6CA224AD56E50033F4EE /* String Extension.swift in Sources */,
+				809F5116254192930083CE67 /* GIF.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

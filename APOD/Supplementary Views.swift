@@ -121,6 +121,12 @@ struct APODMediaView: View {
 				switch mediaType {
 				case .image:
 					APODImage(image: image)
+				case .gif:
+					GeometryReader { geometry in
+						GIFView(gifImage: image, width: geometry.size.width)
+//							.frame(width: geometry.size.width)
+					}
+					
 				case .video:
 //					Link(destination:  APODFetcher.apodURL) {
 						VideoThumbnail(thumbnail: image)
@@ -131,7 +137,7 @@ struct APODMediaView: View {
 				
 			} else {
 				switch mediaType {
-				case .image:
+				case .image, .gif:
 					PlaceholderImage(type: .image)
 				case .video:
 					PlaceholderImage(systemIconName: "video.fill", type: .video)

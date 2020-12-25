@@ -45,7 +45,20 @@ extension CGImage {
 
 extension UIImage {
 	
+//	func resized(to newSize: CGSize, scale: CGFloat = 1) -> UIImage? {
+//		let format = UIGraphicsImageRendererFormat()
+//		format.scale = scale
+//		
+//		let renderer = UIGraphicsImageRenderer(size: size, format: format)
+//		
+//		return renderer.image { (context) in
+//			self.draw(in: CGRect(origin: .zero, size: size))
+//		}
+//	}
+	
 	func resized(to newSize: CGSize, scale: CGFloat = 1) -> UIImage? {
+		NSLog("RESIZE: \(newSize)")
+		
 		let format = UIGraphicsImageRendererFormat()
 		format.scale = scale
 		
@@ -66,8 +79,10 @@ extension UIImage {
 		
 		let scale = minDimension / dim
 		
-		NSLog("scale: \(scale), \(CGSize(width: size.width / scale, height: size.height / scale))")
-		let r = resized(to: CGSize(width: size.width / scale, height: size.height / scale))
+		let newSize = CGSize(width: size.width / scale, height: size.height / scale)
+		
+		NSLog("scale: \(scale), \(newSize), \(self.size)")
+		let r = resized(to: newSize)
 		
 		return r
 	}

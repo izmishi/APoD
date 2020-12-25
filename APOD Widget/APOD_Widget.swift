@@ -23,7 +23,7 @@ struct Provider: TimelineProvider {
 			let entry = SimpleEntry(date: Date(), apodItem: APODItem())
 			completion(entry)
 		} else {
-			APODFetcher.loadCurrentAPOD { (apodItem, error) in
+			APODFetcher.loadAPODFromAPI { (apodItem, error) in
 				let apod = apodItem ?? APODItem()
 				let entry = SimpleEntry(date: Date(), apodItem: apod)
 				
@@ -34,7 +34,7 @@ struct Provider: TimelineProvider {
 	
 	func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
 		let oneDay = 86400.0
-		APODFetcher.loadCurrentAPOD { (apodItem, error) in
+		APODFetcher.loadAPODFromAPI { (apodItem, error) in
 			let apod = apodItem ?? APODItem()
 			let entry = SimpleEntry(date: Date(), apodItem: apod)
 			
@@ -76,7 +76,7 @@ struct APOD_WidgetEntryView : View {
 
     var body: some View {
 		
-		if let apodImage = entry.apodItem.image {
+		if let apodImage = entry.apodItem.lowResImage {
 			GeometryReader { geometry in
 				ZStack(alignment: .leading) {
 					

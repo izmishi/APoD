@@ -30,10 +30,11 @@ func date(fromISO8601String string: String) -> Date {
 	return formatter.date(from: string) ?? Date()
 }
 
-public struct APODItem {
-	public enum MediaType {
+public struct APODItem: Equatable {
+	public enum MediaType: Equatable {
 		case image
 		case video
+		case gif
 		case unknown(String)
 		
 		init(from string: String) {
@@ -42,6 +43,8 @@ public struct APODItem {
 				self = .image
 			case "video":
 				self = .video
+			case "gif":
+				self = .gif
 			default:
 				self = .unknown(string)
 			}
@@ -51,15 +54,17 @@ public struct APODItem {
 	public var title = ""
 	public var date = Date()
 	public var image: UIImage?
+	public var lowResImage: UIImage?
 	public var imageCreditLabel = ""
 	public var imageCredit = ""
 	public var explanation = ""
 	public var mediaType: MediaType
 	
-	init(title: String = "Astronomy Picture of the Day", date: Date = Date(), image: UIImage? = nil, imageCreditLabel: String = "", imageCredit: String = "", explanation: String = "", mediaType: MediaType = .unknown("")) {
+	init(title: String = "Astronomy Picture of the Day", date: Date = Date(), image: UIImage? = nil, lowResImage: UIImage? = nil, imageCreditLabel: String = "", imageCredit: String = "", explanation: String = "", mediaType: MediaType = .unknown("")) {
 		self.title = title
 		self.date = date
 		self.image = image
+		self.lowResImage = lowResImage
 		self.imageCreditLabel = imageCreditLabel
 		self.imageCredit = imageCredit
 		self.explanation = explanation
@@ -96,8 +101,9 @@ public class APODFetcher {
 
 
 			let title = json["title"] ?? ""
-			let mediaType = APODItem.MediaType(from: json["media_type"] ?? "Not Found")
+			var mediaType = APODItem.MediaType(from: json["media_type"] ?? "Not Found")
 			let apodURL = json["hdurl"] ?? json["url"] ?? ""
+			let lowResURL = json["url"] ?? ""
 			let copyright = imageCredit != "" ? imageCredit : (json["copyright"] ?? "Public Domain")
 			var apodDate = Date()
 
@@ -106,11 +112,27 @@ public class APODFetcher {
 			}
 
 			var apodImage: UIImage? = nil
+			var lowResImage: UIImage? = nil
+			
+			if apodURL.hasSuffix(".gif") {
+				mediaType = .gif
+			}
 
 			switch mediaType {
 			case .image:
-				guard let url = URL(string: apodURL) else { break }
-				apodImage = getImage(for: url)
+				if let url = URL(string: apodURL) {
+					apodImage = getImage(for: url)
+				}
+				if let lowResURL = URL(string: lowResURL) {
+					lowResImage = getImage(for: lowResURL)
+				}
+			case .gif:
+				if let url = URL(string: apodURL) {
+					apodImage = getGif(for: url)
+				}
+				if let lowResURL = URL(string: lowResURL) {
+					lowResImage = getGif(for: lowResURL)
+				}
 			case .video:
 				apodImage = getYouTubeThumbnail(for: apodURL)
 			default:
@@ -118,7 +140,7 @@ public class APODFetcher {
 			}
 
 
-			let apod = APODItem(title: title, date: apodDate, image: apodImage, imageCreditLabel: imageCreditLabel, imageCredit: copyright, explanation: explanation, mediaType: mediaType)
+			let apod = APODItem(title: title, date: apodDate, image: apodImage, lowResImage: lowResImage, imageCreditLabel: imageCreditLabel, imageCredit: copyright, explanation: explanation, mediaType: mediaType)
 
 			completion(apod, error)
 		}.resume()
@@ -129,6 +151,14 @@ public class APODFetcher {
 			let imageData = try Data(contentsOf: url)
 			return UIImage(data: imageData)
 		} catch {
+			return nil
+		}
+	}
+	
+	static func getGif(for url: URL) -> UIImage? {
+		if let gifData = try? Data(contentsOf: url) {
+			return UIImage.gif(data: gifData)
+		} else {
 			return nil
 		}
 	}
@@ -214,7 +244,8 @@ public class APODFetcher {
 	static func parseAPODHTML(_ html: String) -> APODItem {
 		let boldPattern = try? NSRegularExpression(pattern: #"(?<=<b>).*(?=<\/b>)"#)
 		
-		let imageLinkPattern = try? NSRegularExpression(pattern: #"(?<=href=('|"))image\/.*\.(png|jpg)(?=('|"))"#)
+		let imageLinkPattern = try? NSRegularExpression(pattern: #"(?<=href=('|"))image\/.*\.(png|jpg|jpeg)(?=('|"))"#)
+		let gifLinkPattern = try? NSRegularExpression(pattern: #"(?<=href=('|"))image\/.*\.gif(?=('|"))"#)
 		let videoSRCPattern = try? NSRegularExpression(pattern: #"(?<=<iframe).*src="([^"]*)"#)
 		
 		let range = NSRange(location: 0, length: html.count)
@@ -231,10 +262,16 @@ public class APODFetcher {
 		
 		if let imageRange = imageLinkPattern?.rangeOfFirstMatch(in: html, range: range), imageRange.length > 0 {
 			let imageLink = "https://apod.nasa.gov/apod/" + html[Range(imageRange, in: html)!].trimmingCharacters(in: .whitespaces)
-			if let imageURL = URL(string: imageLink), let imageData = try? Data(contentsOf: imageURL) {
-				image = UIImage(data: imageData)
+			if let imageURL = URL(string: imageLink) {
+				image = getImage(for: imageURL)
 			}
 			mediaType = .image
+		} else if let gifRange = gifLinkPattern?.rangeOfFirstMatch(in: html, range: range), gifRange.length > 0 {
+			let gifLink = "https://apod.nasa.gov/apod/" + html[Range(gifRange, in: html)!].trimmingCharacters(in: .whitespaces)
+			if let gifURL = URL(string: gifLink) {
+				image = getGif(for: gifURL)
+			}
+			mediaType = .gif
 		} else if let videoMatch = videoSRCPattern?.firstMatch(in: html, range: range) {
 			let videoSRC = String(html.substringFromNSRange(videoMatch.range(at: 1)))
 			image = getYouTubeThumbnail(for: videoSRC)
