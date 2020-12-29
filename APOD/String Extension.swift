@@ -8,8 +8,8 @@
 import Foundation
 
 extension String {
-	func substringFromNSRange(_ nsRange: NSRange) -> Substring {
-		guard let range = Range(nsRange, in: self) else { return self[...]}
-		return self[range]
-	}
+    func substringFromNSRange(_ nsRange: NSRange) -> Substring {
+        guard let range = Range(nsRange, in: self) else { return self[...]}
+        return self[range]
+    }
 }

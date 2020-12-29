@@ -54,24 +54,24 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		801C00D024ACEB0B007FEE51 /* UIImage Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage Extension.swift"; sourceTree = "<group>"; };
-		803B902424AA439E007394E2 /* Supplementary Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Supplementary Views.swift"; sourceTree = "<group>"; };
+		801C00D024ACEB0B007FEE51 /* UIImage Extension.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = "UIImage Extension.swift"; sourceTree = "<group>"; };
+		803B902424AA439E007394E2 /* Supplementary Views.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = "Supplementary Views.swift"; sourceTree = "<group>"; };
 		803B902A24AA735C007394E2 /* APOD WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "APOD WidgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		803B902C24AA735C007394E2 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		803B902E24AA735D007394E2 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		803B903124AA735D007394E2 /* APOD_Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APOD_Widget.swift; sourceTree = "<group>"; };
+		803B903124AA735D007394E2 /* APOD_Widget.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = APOD_Widget.swift; sourceTree = "<group>"; };
 		803B903324AA7372007394E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		803B903524AA7372007394E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		803E6CA124AD56E40033F4EE /* String Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String Extension.swift"; sourceTree = "<group>"; };
+		803E6CA124AD56E40033F4EE /* String Extension.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = "String Extension.swift"; sourceTree = "<group>"; };
 		8044E8DB24A80A1800924133 /* APOD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APOD.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8044E8DE24A80A1800924133 /* APODApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODApp.swift; sourceTree = "<group>"; };
-		8044E8E024A80A1900924133 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8044E8DE24A80A1800924133 /* APODApp.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = APODApp.swift; sourceTree = "<group>"; };
+		8044E8E024A80A1900924133 /* ContentView.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8044E8E224A80A2B00924133 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8044E8E524A80A2C00924133 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8044E8E724A80A2C00924133 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8044E8ED24A80B5A00924133 /* APOD.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = APOD.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		8044E8EE24A8D7C000924133 /* APODFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODFetcher.swift; sourceTree = "<group>"; };
-		809F5115254192930083CE67 /* GIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIF.swift; sourceTree = "<group>"; };
+		8044E8EE24A8D7C000924133 /* APODFetcher.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = APODFetcher.swift; sourceTree = "<group>"; };
+		809F5115254192930083CE67 /* GIF.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = GIF.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
