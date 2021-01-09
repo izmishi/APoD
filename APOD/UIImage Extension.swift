@@ -161,7 +161,7 @@ extension UIImage {
         let widthInPoints = size.width
         let widthInPixels = widthInPoints * scale
         
-        print(heightInPixels, scale)
+//        print(heightInPixels, scale)
         return (widthInPixels, heightInPixels)
     }
     

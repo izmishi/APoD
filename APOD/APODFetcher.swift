@@ -23,11 +23,12 @@ func date(from string: String) -> Date {
     // Create date from components
     return Calendar.current.date(from: dateComponents)!
 }
-
-func date(fromISO8601String string: String) -> Date {
-    let formatter = ISO8601DateFormatter()
-    formatter.formatOptions = .withFullDate
-    return formatter.date(from: string) ?? Date()
+extension Date {
+	static func fromISO8601(string: String) -> Date? {
+		let formatter = ISO8601DateFormatter()
+		formatter.formatOptions = .withFullDate
+		return formatter.date(from: string)
+	}
 }
 
 public struct APODItem: Equatable {
@@ -54,17 +55,19 @@ public struct APODItem: Equatable {
     public var title = ""
     public var date = Date()
     public var imageURL: URL?
-    public var image: UIImage?
+	public var lowResImageURL: URL?
+	public var image: UIImage?
     public var lowResImage: UIImage?
     public var imageCreditLabel = ""
     public var imageCredit = ""
     public var explanation = ""
     public var mediaType: MediaType
     
-    init(title: String = "Astronomy Picture of the Day", date: Date = Date(), imageURL: URL? = nil, image: UIImage? = nil, lowResImage: UIImage? = nil, imageCreditLabel: String = "", imageCredit: String = "", explanation: String = "", mediaType: MediaType = .unknown("")) {
+	init(title: String = "Astronomy Picture of the Day", date: Date = Date(), imageURL: URL? = nil, lowResImageURL: URL? = nil, image: UIImage? = nil, lowResImage: UIImage? = nil, imageCreditLabel: String = "", imageCredit: String = "", explanation: String = "", mediaType: MediaType = .unknown("")) {
         self.title = title
         self.date = date
         self.imageURL = imageURL
+		self.lowResImageURL = lowResImageURL
         self.image = image
         self.lowResImage = lowResImage
         self.imageCreditLabel = imageCreditLabel
@@ -73,6 +76,9 @@ public struct APODItem: Equatable {
         self.mediaType = mediaType
     }
 }
+//enum NetworkError: Error {
+//	case badURL
+//}
 
 public class APODFetcher {
     static let apodURL = URL(string: "https://apod.nasa.gov/apod/astropix.html")!
@@ -82,73 +88,87 @@ public class APODFetcher {
         
     }
     
-    static let session = URLSession(configuration: .default)
+	static let session = URLSession.shared
+	
+	enum FetchError: Error {
+		case failedToLoad
+	}
     
+	static func loadAPODFromAPIWithoutImages(completion: @escaping (APODItem?, Error?) -> Void) {
+		session.dataTask(with: apodAPIURL) { (data, response, error) in
+			guard let data = data else { return }
+			guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] else { return }
+			
+			// Get credits from the APOD website, because the API doesn't provide good credits
+			var imageCredit: String?
+			var imageCreditLabel = "Copyright"
+			if let apodData = try? Data(contentsOf: apodURL), let apodHTML = String(data: apodData, encoding: .utf8) {
+				(_, imageCreditLabel, imageCredit) = getExplanationAndCredits(from: apodHTML)
+			}
+			
+			let title = json["title"] ?? ""
+			let explanation = json["explanation"] ?? "No explanation"
+
+			var mediaType = APODItem.MediaType(from: json["media_type"] ?? "Not Found")
+			let apodURLString = json["hdurl"] ?? json["url"] ?? ""
+			let lowResURLString = json["url"] ?? ""
+			let copyright = imageCredit ?? json["copyright"] ?? "Public Domain"
+			let apodDate = Date.fromISO8601(string: json["date"] ?? "") ?? Date()
+
+			if apodURLString.hasSuffix(".gif") {
+				mediaType = .gif
+			}
+
+			let partialAPOD = APODItem(title: title, date: apodDate, imageURL: URL(string: apodURLString), lowResImageURL: URL(string: lowResURLString), image: nil, lowResImage: nil, imageCreditLabel: imageCreditLabel, imageCredit: copyright, explanation: explanation, mediaType: mediaType)
+
+			completion(partialAPOD, error)
+		}
+		.resume()
+	}
     
-    static func loadAPODFromAPI(completion: @escaping (APODItem?, Error?) -> Void) {
-        session.dataTask(with: apodAPIURL) { (data, response, error) in
-            guard let data = data else { return }
-            
-            guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] else { return }
-            
-            var imageCreditLabel = "Copyright"
-            var imageCredit = ""
-            var explanation = json["explanation"] ?? "No explanation"
-            
-            if let apodData = try? Data(contentsOf: apodURL) {
-                if let apodHTML = String(data: apodData, encoding: .utf8) {
-                    (explanation, imageCreditLabel, imageCredit) = getExplanationAndCredits(from: apodHTML)
-                }
-            }
-            
-            
-            let title = json["title"] ?? ""
-            var mediaType = APODItem.MediaType(from: json["media_type"] ?? "Not Found")
-            let apodURL = json["hdurl"] ?? json["url"] ?? ""
-            let lowResURL = json["url"] ?? ""
-            let copyright = imageCredit != "" ? imageCredit : (json["copyright"] ?? "Public Domain")
-            var apodDate = Date()
-            
-            if let dateString = json["date"] {
-                apodDate = date(fromISO8601String: dateString)
-            }
-            
-            var apodImage: UIImage? = nil
-            var lowResImage: UIImage? = nil
-            
-            if apodURL.hasSuffix(".gif") {
-                mediaType = .gif
-            }
-            
-            switch mediaType {
-            case .image:
-                if let url = URL(string: apodURL) {
-                    apodImage = getImage(for: url)
-                    lowResImage = apodImage
-                }
-                if let lowResURL = URL(string: lowResURL) {
-                    lowResImage = getImage(for: lowResURL)
-                }
-            case .gif:
-                if let url = URL(string: apodURL) {
-                    apodImage = getGif(for: url)
-                    lowResImage = apodImage
-                }
-                if let lowResURL = URL(string: lowResURL) {
-                    lowResImage = getGif(for: lowResURL)
-                }
-            case .video:
-                (apodImage, lowResImage) = getYouTubeThumbnails(for: apodURL)
-            default:
-                break
-            }
-            
-            
-            let apod = APODItem(title: title, date: apodDate, imageURL: URL(string: apodURL), image: apodImage, lowResImage: lowResImage, imageCreditLabel: imageCreditLabel, imageCredit: copyright, explanation: explanation, mediaType: mediaType)
-            
-            completion(apod, error)
-        }.resume()
+    static func loadAPODFromAPIWithImages(completion: @escaping (APODItem?, Error?) -> Void) {
+		loadAPODFromAPIWithoutImages { (apodItem, error) in
+			guard let apodItem = apodItem else {
+				completion(nil, FetchError.failedToLoad)
+				return
+			}
+			
+			var apodImage: UIImage? = nil
+			var lowResImage: UIImage? = nil
+			
+			switch apodItem.mediaType {
+			case .image:
+				if let url = apodItem.imageURL {
+					apodImage = getImage(for: url)
+					lowResImage = apodImage
+				}
+				if let lowResURL = apodItem.lowResImageURL {
+					lowResImage = getImage(for: lowResURL)
+				}
+			case .gif:
+				if let url = apodItem.imageURL {
+					apodImage = getGif(for: url)
+					lowResImage = apodImage
+				}
+				if let lowResURL = apodItem.lowResImageURL {
+					lowResImage = getGif(for: lowResURL)
+				}
+			case .video:
+				(apodImage, lowResImage) = getYouTubeThumbnails(for: apodItem.imageURL?.absoluteString ?? "")
+			default:
+				break
+			}
+			
+			
+			var apod = apodItem
+			
+			apod.image = apodImage
+			apod.lowResImage = lowResImage
+			
+			completion(apod, error)
+		}
     }
+	
     
     static func getImage(for url: URL) -> UIImage? {
         do {
@@ -166,6 +186,17 @@ public class APODFetcher {
             return nil
         }
     }
+	
+	static func getYouTubeThumbnailURLs(for videoURLString: String) -> (highRes: URL?, lowRes: URL?) {
+		guard let youtubeID = getYouTubeID(for: videoURLString) else {
+			return (nil, nil)
+		}
+		
+		let lowResURL = URL(string: "https://img.youtube.com/vi/\(youtubeID)/hqdefault.jpg")
+		let highResURL = URL(string: "https://img.youtube.com/vi/\(youtubeID)/maxresdefault.jpg")
+		
+		return (highResURL, lowResURL)
+	}
     
     static func getYouTubeThumbnails(for urlString: String) -> (highRes: UIImage?, lowRes: UIImage?) {
         guard let youtubeID = getYouTubeID(for: urlString) else {
@@ -203,21 +234,6 @@ public class APODFetcher {
         return String(id)
     }
     
-    static func loadCurrentAPOD(completion: @escaping (APODItem?, Error?) -> Void) {
-        session.dataTask(with: apodURL) { (data, response, error) in
-            guard let data = data else { return }
-            
-            guard let apodHTML = String(data: data, encoding: .utf8) else {
-                completion(nil, error)
-                return
-            }
-            
-            let apod = parseAPODHTML(apodHTML)
-            
-            completion(apod, error)
-        }.resume()
-    }
-    
     static func getExplanationAndCredits(from html: String) -> (explanation: String, creditLabel: String, credit: String) {
         guard let imageCreditLabelPattern = try? NSRegularExpression(pattern: #"(?<=<b>).*?(?=<\/b>)"#) else {
             return ("", "", "")
@@ -252,61 +268,4 @@ public class APODFetcher {
         return (explanation, imageCreditLabel, imageCredit)
     }
     
-    static func parseAPODHTML(_ html: String) -> APODItem {
-        let boldPattern = try? NSRegularExpression(pattern: #"(?<=<b>).*(?=<\/b>)"#)
-        
-        let imageLinkPattern = try? NSRegularExpression(pattern: #"(?<=href=('|"))image\/.*\.(png|jpg|jpeg)(?=('|"))"#)
-        let gifLinkPattern = try? NSRegularExpression(pattern: #"(?<=href=('|"))image\/.*\.gif(?=('|"))"#)
-        let videoSRCPattern = try? NSRegularExpression(pattern: #"(?<=<iframe).*src="([^"]*)"#)
-        
-        let range = NSRange(location: 0, length: html.count)
-        
-        
-        // The title
-        let titleRange = boldPattern!.rangeOfFirstMatch(in: html, range: range)
-        let title = html[Range(titleRange, in: html)!].trimmingCharacters(in: .whitespaces)
-        
-        
-        // The image
-        var image: UIImage? = nil
-        var lowResImage: UIImage? = nil
-        var mediaType = APODItem.MediaType.unknown("")
-        var apodImageURL: URL? = nil
-        
-        if let imageRange = imageLinkPattern?.rangeOfFirstMatch(in: html, range: range), imageRange.length > 0 {
-            let imageLink = "https://apod.nasa.gov/apod/" + html[Range(imageRange, in: html)!].trimmingCharacters(in: .whitespaces)
-            if let imageURL = URL(string: imageLink) {
-                image = getImage(for: imageURL)
-                lowResImage = image
-                apodImageURL = imageURL
-            }
-            mediaType = .image
-        } else if let gifRange = gifLinkPattern?.rangeOfFirstMatch(in: html, range: range), gifRange.length > 0 {
-            let gifLink = "https://apod.nasa.gov/apod/" + html[Range(gifRange, in: html)!].trimmingCharacters(in: .whitespaces)
-            if let gifURL = URL(string: gifLink) {
-                image = getGif(for: gifURL)
-                lowResImage = image
-                apodImageURL = gifURL
-            }
-            mediaType = .gif
-        } else if let videoMatch = videoSRCPattern?.firstMatch(in: html, range: range) {
-            let videoSRC = String(html.substringFromNSRange(videoMatch.range(at: 1)))
-            print(videoSRC)
-            apodImageURL = URL(string: videoSRC)
-            (image, lowResImage) = getYouTubeThumbnails(for: videoSRC)
-            mediaType = .video
-        }
-        
-        
-        // Explanation and credits
-        let (explanation, imageCreditLabel, imageCredit) = getExplanationAndCredits(from: html)
-        
-        
-        // The date
-        let dateString = html.components(separatedBy: "<p>")[2].replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: #"<br>.*"#, with: "", options: .regularExpression)
-        
-        let imageDate = date(from: dateString)
-        
-        return APODItem(title: title, date: imageDate, imageURL: apodImageURL, image: image, lowResImage: lowResImage, imageCreditLabel: imageCreditLabel, imageCredit: imageCredit, explanation: explanation, mediaType: mediaType)
-    }
 }

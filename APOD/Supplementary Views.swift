@@ -61,6 +61,7 @@ struct PlaceholderImage: View {
                 Spacer()
                 
                 Image(systemName: systemIconName)
+					.imageScale(.large)
                     .font(.largeTitle)
                 
                 Spacer()
@@ -104,9 +105,11 @@ struct VideoThumbnail: View {
 struct BoldLabelText: View {
     var boldLabel: String
     var text: String
+	
+	@Environment(\.font) var font: Font?
     
     var body: some View {
-        Text("\(boldLabel) ").bold() + Text(text)
+		Text("\(boldLabel) ").font((font ?? Font.body).lowercaseSmallCaps().bold()) + Text(text)
     }
 }
 
@@ -127,7 +130,6 @@ struct APODMediaView: View {
                         GIFView(gifImage: image, width: geometry.size.width)
                         //							.frame(width: geometry.size.width)
                     }
-                    
                 case .video:
                     Link(destination: imageURL ?? APODFetcher.apodURL) {
                         VideoThumbnail(thumbnail: image)
@@ -143,7 +145,7 @@ struct APODMediaView: View {
                 case .video:
                     PlaceholderImage(systemIconName: "video.fill", type: .video)
                 case .unknown(_):
-                    PlaceholderImage(systemIconName: "questionmark.square.dashed", type: mediaType)
+                    PlaceholderImage(systemIconName: "moon.stars.fill", type: mediaType)
                 }
             }
         }
@@ -152,6 +154,6 @@ struct APODMediaView: View {
 
 struct ScrollableImage_Previews: PreviewProvider {
     static var previews: some View {
-        ScrollableImage(image: Image(systemName: "photo.fill"), isPresented: .constant(true))
+        ScrollableImage(image: Image(uiImage: previewImage!), isPresented: .constant(true))
     }
 }

@@ -25,7 +25,7 @@ struct APODApp: App {
     }
     
     func loadAPOD() {
-        APODFetcher.loadCurrentAPOD { (apod, error) in
+        APODFetcher.loadAPODFromAPIWithoutImages { (apod, error) in
             if let apod = apod {
                 apodItem = apod
             } else {
@@ -33,6 +33,6 @@ struct APODApp: App {
                     apodItem = APODItem(explanation: "Couldn't load")
                 }
             }
-        }
+		}
     }
 }

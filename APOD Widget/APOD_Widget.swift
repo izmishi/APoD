@@ -23,7 +23,7 @@ struct Provider: TimelineProvider {
             let entry = SimpleEntry(date: Date(), apodItem: APODItem())
             completion(entry)
         } else {
-            APODFetcher.loadAPODFromAPI { (apodItem, error) in
+            APODFetcher.loadAPODFromAPIWithImages { (apodItem, error) in
                 let apod = apodItem ?? APODItem()
                 let entry = SimpleEntry(date: Date(), apodItem: apod)
                 
@@ -34,20 +34,25 @@ struct Provider: TimelineProvider {
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         let oneDay = 86400.0
-        APODFetcher.loadAPODFromAPI { (apodItem, error) in
+		NSLog("234")
+        APODFetcher.loadAPODFromAPIWithImages { (apodItem, error) in
             let apod = apodItem ?? APODItem()
             let entry = SimpleEntry(date: Date(), apodItem: apod)
-            
+
             var calendar = Calendar.current
             calendar.timeZone = TimeZone(identifier: "America/Detroit")!
-            
+
             let nextReloadDate = calendar.date(bySettingHour: 1, minute: 10, second: 0, of: Date().advanced(by: oneDay)) ?? Date().advanced(by: oneDay)
-            
-            
+
+
             let timeline = Timeline(entries: [entry], policy: .after(nextReloadDate))
-            
+
             completion(timeline)
         }
+		
+//		let entry = SimpleEntry(date: Date(), apodItem: APODItem())
+//		let timeline = Timeline(entries: [entry], policy: .never)
+//		completion(timeline)
     }
 }
 
@@ -68,7 +73,7 @@ struct APOD_WidgetEntryView : View {
     @Environment(\.widgetFamily) var family
     
     var lightText: Bool {
-        if let brightness = entry.apodItem.image?.averageBrightness {
+        if let brightness = entry.apodItem.lowResImage?.averageBrightness {
             return brightness < 0.5
         }
         return true
@@ -76,22 +81,23 @@ struct APOD_WidgetEntryView : View {
     
     var imageToShow: UIImage? {
         if let image = entry.apodItem.image, image.sizeOfSmallestDimension < 1200 {
+			NSLog("232")
             return image
         }
-        
+		NSLog("442, \(String(describing: entry.apodItem.lowResImage?.description))")
         return entry.apodItem.lowResImage
     }
     
     var body: some View {
-        
         if let apodImage = imageToShow {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    
+					
                     Image(uiImage: apodImage)//.resizeSmallestDimensionDown(to: 1000) ?? apodImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: geometry.size.width, height: geometry.size.height)
+						.background(PlaceholderImage(type: .image))
                     
                     
                     VStack(alignment: .leading) {
@@ -129,13 +135,25 @@ struct APOD_WidgetEntryView : View {
                     .foregroundColor(lightText ? .white : .black)
                     .shadow(color: lightText ? .black : .white, radius: 8)
                     .padding()
-                    
                 }
+				.background(Color.red)
             }
-        } else {
-            PlaceholderImage(type: .image)
-        }
-    }
+			.onAppear {
+				NSLog("ashtasht")
+			}
+		} else {
+			Image(systemName: "photo.fill")
+				.imageScale(.large)
+				.font(.largeTitle)
+				.foregroundColor(Color(UIColor.systemFill))
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
+				.background(Color(UIColor.systemBackground))
+				.unredacted()
+				.onAppear {
+					NSLog("oen")
+				}
+		}
+	}
 }
 
 @main

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		801C00D124ACEB0B007FEE51 /* UIImage Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801C00D024ACEB0B007FEE51 /* UIImage Extension.swift */; };
+		8038B8AB25A8EB5000BA113A /* Preview Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8038B8AA25A8EB5000BA113A /* Preview Data.swift */; };
+		8038B8AE25A8ED3400BA113A /* Preview Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8038B8AA25A8EB5000BA113A /* Preview Data.swift */; };
 		803B902524AA43A6007394E2 /* Supplementary Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803B902424AA439E007394E2 /* Supplementary Views.swift */; };
 		803B902D24AA735D007394E2 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 803B902C24AA735C007394E2 /* WidgetKit.framework */; };
 		803B902F24AA735D007394E2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 803B902E24AA735D007394E2 /* SwiftUI.framework */; };
@@ -55,6 +57,7 @@
 
 /* Begin PBXFileReference section */
 		801C00D024ACEB0B007FEE51 /* UIImage Extension.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = "UIImage Extension.swift"; sourceTree = "<group>"; };
+		8038B8AA25A8EB5000BA113A /* Preview Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Preview Data.swift"; sourceTree = "<group>"; };
 		803B902424AA439E007394E2 /* Supplementary Views.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = "Supplementary Views.swift"; sourceTree = "<group>"; };
 		803B902A24AA735C007394E2 /* APOD WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "APOD WidgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		803B902C24AA735C007394E2 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -155,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				8044E8E524A80A2C00924133 /* Preview Assets.xcassets */,
+				8038B8AA25A8EB5000BA113A /* Preview Data.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -260,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8038B8AE25A8ED3400BA113A /* Preview Data.swift in Sources */,
 				809F5117254192930083CE67 /* GIF.swift in Sources */,
 				801C00D124ACEB0B007FEE51 /* UIImage Extension.swift in Sources */,
 				803B903F24AACBD6007394E2 /* Supplementary Views.swift in Sources */,
@@ -274,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				803E6CA024AD3F300033F4EE /* UIImage Extension.swift in Sources */,
+				8038B8AB25A8EB5000BA113A /* Preview Data.swift in Sources */,
 				8044E8EF24A8D7C100924133 /* APODFetcher.swift in Sources */,
 				8044E8E124A80A1900924133 /* ContentView.swift in Sources */,
 				8044E8DF24A80A1800924133 /* APODApp.swift in Sources */,
