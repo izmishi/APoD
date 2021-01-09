@@ -36,7 +36,7 @@ struct ContentView: View {
 	}
     
     var body: some View {
-        ScrollView {
+		ScrollView(showsIndicators: false) {
             VStack(alignment: .leading) {
                 Text(apodItem.title)
                     .font(.title)
