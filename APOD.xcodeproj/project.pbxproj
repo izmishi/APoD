@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,7 +15,7 @@
 		803B902F24AA735D007394E2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 803B902E24AA735D007394E2 /* SwiftUI.framework */; };
 		803B903224AA735D007394E2 /* APOD_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803B903124AA735D007394E2 /* APOD_Widget.swift */; };
 		803B903424AA7372007394E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 803B903324AA7372007394E2 /* Assets.xcassets */; };
-		803B903824AA7372007394E2 /* APOD WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 803B902A24AA735C007394E2 /* APOD WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		803B903824AA7372007394E2 /* APOD WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 803B902A24AA735C007394E2 /* APOD WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		803B903D24AA7396007394E2 /* APODFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8044E8EE24A8D7C000924133 /* APODFetcher.swift */; };
 		803B903F24AACBD6007394E2 /* Supplementary Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803B902424AA439E007394E2 /* Supplementary Views.swift */; };
 		803E6CA024AD3F300033F4EE /* UIImage Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801C00D024ACEB0B007FEE51 /* UIImage Extension.swift */; };
@@ -42,15 +42,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		803B903C24AA7372007394E2 /* Embed App Extensions */ = {
+		803B903C24AA7372007394E2 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				803B903824AA7372007394E2 /* APOD WidgetExtension.appex in Embed App Extensions */,
+				803B903824AA7372007394E2 /* APOD WidgetExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -190,7 +190,7 @@
 				8044E8D724A80A1800924133 /* Sources */,
 				8044E8D824A80A1800924133 /* Frameworks */,
 				8044E8D924A80A1800924133 /* Resources */,
-				803B903C24AA7372007394E2 /* Embed App Extensions */,
+				803B903C24AA7372007394E2 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -208,8 +208,9 @@
 		8044E8D324A80A1800924133 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					803B902924AA735B007394E2 = {
 						CreatedOnToolsVersion = 12.0;
@@ -309,6 +310,7 @@
 				DEVELOPMENT_ASSET_PATHS = "APOD/Preview\\ Content";
 				DEVELOPMENT_TEAM = N99JYD94C7;
 				INFOPLIST_FILE = "APOD Widget/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -331,6 +333,7 @@
 				DEVELOPMENT_ASSET_PATHS = "APOD/Preview\\ Content";
 				DEVELOPMENT_TEAM = N99JYD94C7;
 				INFOPLIST_FILE = "APOD Widget/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -381,6 +384,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -442,6 +446,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -471,7 +476,7 @@
 				DEVELOPMENT_TEAM = N99JYD94C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = APOD/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -494,7 +499,7 @@
 				DEVELOPMENT_TEAM = N99JYD94C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = APOD/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -97,7 +97,6 @@ struct APOD_WidgetEntryView : View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: geometry.size.width, height: geometry.size.height)
-						.background(PlaceholderImage(type: .image))
                     
                     
                     VStack(alignment: .leading) {
@@ -136,10 +135,10 @@ struct APOD_WidgetEntryView : View {
                     .shadow(color: lightText ? .black : .white, radius: 8)
                     .padding()
                 }
-				.background(Color.red)
+				.frame(width: geometry.size.width, height: geometry.size.height)
             }
-			.onAppear {
-				NSLog("ashtasht")
+			.containerBackground(for: .widget) {
+				PlaceholderImage(type: .image)
 			}
 		} else {
 			Image(systemName: "photo.fill")
@@ -147,11 +146,10 @@ struct APOD_WidgetEntryView : View {
 				.font(.largeTitle)
 				.foregroundColor(Color(UIColor.systemFill))
 				.frame(maxWidth: .infinity, maxHeight: .infinity)
-				.background(Color(UIColor.systemBackground))
-				.unredacted()
-				.onAppear {
-					NSLog("oen")
+				.containerBackground(for: .widget) {
+					Color(UIColor.systemBackground)
 				}
+				.unredacted()
 		}
 	}
 }
@@ -165,6 +163,7 @@ struct APOD_Widget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             APOD_WidgetEntryView(entry: entry)
         }
+		.contentMarginsDisabled()
         .configurationDisplayName("Astronomy Picture of the Day")
         .description("Discover the cosmos!")
     }
